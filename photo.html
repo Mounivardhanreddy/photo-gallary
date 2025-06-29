@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        html{
+            scroll-behavior: smooth;
+        }
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color:black;
+            color: white;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        header h1 {
+            font-size:100px;
+            color: #fff;
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 1200px;
+            cursor: pointer;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            color: #fff;
+            padding: 10px 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .overlay {
+            transform: translateY(0);
+        }
+
+        .overlay h3 {
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+
+        .overlay p {
+            font-size: 0.9rem;
+        }
+
+        .content1{
+            text-align: center;
+            background-color:black;
+        }
+ 
+        h2 {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+}
+
+h2.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h2.hidden {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+        .content1 h2{
+            color: white;
+            font-size: 100px;
+        }
+        .content1 p{
+            color: white;
+            font-size: 70px;
+            text-align:center;
+        }
+        .content-section {
+            margin: 50px auto;
+            padding: 30px;
+            max-width: 800px;
+            text-align: center;
+            background: black;
+            border-radius: 10px;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .content-section p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .content-section .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color:black;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .content-section .btn:hover {
+            background-color: white;
+            color: black;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 10px;
+            font-size: 0.9rem;
+            background-color: #222;
+            color: #fff;
+        }
+        .btn-hide {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #fff;
+            background-color: black;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-hide:hover {
+            background-color:white;
+            color: black;
+        }
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: #121212;
+            color: #ffffff;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            
+            font-weight: bold;
+        }
+
+        .navbar .menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar .menu li {
+            position: relative;
+        }
+
+        .navbar .menu li a {
+            text-decoration: none;
+            color: white;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .menu li a:hover {
+            color: #858ae3;
+            font-size: 1.5rem;
+        }
+
+        /* Dropdown Menu */
+        .navbar .menu li .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background:rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .menu li:hover .dropdown {
+            display: block;
+        }
+
+        .navbar .menu li .dropdown a {
+            display: block;
+            padding: 5px 10px;
+        }
+
+        .navbar .menu li .dropdown a:hover {
+            background:white;
+            color: black;
+            border-radius: 5px;
+        }
+
+        /* Search Bar */
+        .navbar .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .navbar .search-bar input {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .navbar .search-bar button {
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Dark Mode Toggle */
+        .navbar .dark-mode-toggle {
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: white;
+            margin-left: 10px;
+        }
+
+        /* Mobile Menu */
+        .navbar .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .navbar .menu-toggle span {
+            background: white;
+            height: 3px;
+            width: 25px;
+            margin: 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .navbar .menu {
+                display: none;
+                flex-direction: column;
+                background: rgba(0, 0, 0, 0.2);
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 200px;
+                padding: 20px;
+            }
+
+            .navbar .menu.active {
+                display: flex;
+            }
+
+            .navbar .menu-toggle {
+                display: flex;
+            }
+
+            .navbar .search-bar {
+                display: none;
+            }
+        }
+        .video-background {
+    position: relative;
+    height: 100vh; /* Full screen */
+    overflow: hidden;
+  }
+  
+  #background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire background */
+    z-index: -1; /* Keeps the video behind content */
+  }
+  
+  .content {
+            position: absolute; /* Position relative to the parent */
+            top: 50%; /* Center vertically */
+            left: 30%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Adjust for perfect centering */
+            color: white; /* Text color for contrast */
+            text-align: center; /* Center align text */
+            font-family: Arial, sans-serif; /* Font style */
+            z-index: 1; /* Ensure the content appears above the background */
+            font-size: 90px;
+        }
+
+        /* Optional: Add background for the content to stand out */
+        .content-bg {
+            background-color: rgba(0, 0, 0, 0); /* Semi-transparent dark background */
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .imgs{
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .imgs img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .marquee-container {
+  width: 100%; /* Container will take full width */
+  overflow: hidden; /* Hide content that overflows */
+  position: relative;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap; /* Ensures the text stays on one line */
+  padding-left: 100%; /* Start the text off the screen */
+  animation: marquee 100s linear infinite; /* Animation for smooth scrolling */
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0); /* Start the text off-screen */
+  }
+  100% {
+    transform: translateX(-100%); /* Move the text to the left, off-screen */
+  }
+}
+.container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 20px; /* Space between items */
+            margin: 20px;
+        }
+
+        .image {
+            flex: 1; /* Each image takes equal space */
+        }
+
+        .image img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .text {
+            flex: 1; /* Text section takes equal space */
+            padding: 10px;
+           
+            border-radius: 10px;
+            
+        }
+
+        .text p {
+            font-size: 50px;
+            line-height: 1.5;
+            
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .image,
+            .text {
+                flex: none;
+                width: 100%;
+            }
+        }
+       .buttons{
+        font-size: 50px;
+        border-radius: 10px;
+        background-color: white;
+        color: black;
+       }
+       .fade-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.fade-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo"><i class="fa-sharp-duotone fa-regular fa-heart fa-beat fa-2x" style="--fa-primary-color: #ff2600; --fa-secondary-color: #ff2600;"></i></div>
+        
+        <ul class="menu">
+            <li><a href="#"><i class="fa-solid fa-house fa-lg"></i></a></li>
+            <li><a href="#"><i class="fa-brands fa-instagram fa-lg"></i></a></li>
+            <li>
+                <a href="#"><i class="fa-solid fa-bars fa-lg"></i></a>
+                <div class="dropdown">
+                    <a href="#">Web Design</a>
+                    <a href="#">SEO</a>
+                    <a href="#">Marketing</a>
+                </div>
+            </li>
+            <li><a href="#"><i class="fa-solid fa-phone fa-lg"></i></a></li>
+        </ul>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search...">
+            <button>Go</button>
+        </div>
+
+        <div class="dark-mode-toggle" id="dark-mode-toggle">🌙</div>
+        <div class="menu-toggle" id="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    <header>
+        <section class="video-background">
+            <video autoplay muted loop id="background-video">
+                <source src="craker.mp4">
+              </video>
+              <div class="content">
+                <div class="content-bg">
+                    <h2>welcome ,</h2>
+                    <h2>my Gallery.</h2>
+                </div>
+              </div>
+        </section>
+    </header>
+    <main>
+        <section class="gallery">
+            <div class="gallery-item">
+                <img src="beach.webp" alt="Gallery Image 1">
+                <div class="overlay">
+                    <h3>Image 1</h3>
+                    <p>Beautiful Landscape</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="taj .webp" alt="Gallery Image 2">
+                <div class="overlay">
+                    <h3>Image 2</h3>
+                    <p>Taj Mahal</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="cat.webp" alt="Gallery Image 3">
+                <div class="overlay">
+                    <h3>Image 3</h3>
+                    <p>Cat</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="bridge.jpeg" alt="Gallery Image 4">
+                <div class="overlay">
+                    <h3>Image 4</h3>
+                    <p>Street View</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="flower.jpeg" alt="Gallery Image 5">
+                <div class="overlay">
+                    <h3>Image 5</h3>
+                    <p>Flowers</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="archi.webp" alt="Gallery Image 5">
+                <div class="overlay">
+                    <h3>Image 6</h3>
+                    <p>architecture</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="desert.webp" alt="Gallery Image 5">
+                <div class="overlay">
+                    <h3>Image 6</h3>
+                    <p>desert</p>
+                </div>
+            </div>
+            <div class="gallery-item">
+                <img src="tram.jpeg" alt="Gallery Image 5">
+                <div class="overlay">
+                    <h3>Image 6</h3>
+                    <p>streets</p>
+                </div>
+            </div>
+        </section>
+        <div style="text-align: center; margin: 20px;">
+                <button class="btn-hide" id="hide-gallery">Hide Gallery</button>
+                <button class="btn-hide" id="hide-content">Hide Content</button>
+                <button class="btn-hide" id="show-gallery">Show Gallery</button>
+                <button class="btn-hide" id="show-content">Show Content</button>
+        </div>
+        <section class="content1">
+            <h2>Hello ,</h2>
+            <h2>Everyone.</h2>
+        </section>
+        <section >
+          <div class="imgs">
+            <img src="desert.webp">
+            <div class="content">
+                <div class="content-bg">
+                    <h2>Question ?</h2>
+                    <h2>   Create ,</h2>
+                    <h2>     Built ,</h2>
+                    <h2>       Enjoy !</h2>
+                </div>
+              </div>
+          </div>
+        </section>
+        <section class="content1">
+            <div class="marquee-container">
+                <p class="marquee-text">
+                  Capture the beauty of everyday moments with your camera. Photography is about seeing the world differently. | 
+                  "Photography is the story I fail to put into words." — Destin Sparks | 
+                  Lighting can make or break a photo. Experiment with natural light and shadows for the best effect. | 
+                  Composition is key! Use leading lines, symmetry, and framing to create visually appealing photos. |
+                  Creative photography is all about perspective. Try shooting from unexpected angles to add intrigue to your photos. |
+                  "A picture is a secret about a secret, the more it tells you the less you know." — Diane Arbus | 
+                  In photography, patience pays off. Wait for the right moment, and the results will be worth it! |
+                </p>
+              </div>
+                     
+        </section>
+        <section class="content1">
+            <div class="marquee-container">
+                <p class="marquee-text">
+                    Photography is a powerful medium to express your creativity and vision. | 
+                    "Photography is the only language that can be understood anywhere in the world." — Bruno Barbey | 
+                    Explore the beauty of light and shadow to create stunning photos. | 
+                    Capture moments that tell stories and evoke emotions. | 
+                    "The camera is an instrument that teaches people how to see without a camera." — Dorothea Lange | 
+                    Try different angles and perspectives to make your photos stand out. | 
+                    Photography allows you to freeze time and relive memories forever. | 
+                    "Photography takes an instant out of time, altering life by holding it still." — Dorothea Lange | 
+                    Experiment with colors, textures, and composition to create unique shots. | 
+                    Photography is not just about the equipment; it’s about your vision and creativity. | 
+                    "The best camera is the one that's with you." — Chase Jarvis | 
+                    Get out and shoot, every opportunity is a chance to capture something beautiful!
+                </p>
+            </div>          
+        </section>
+        <section >
+            <div class="imgs">
+              <img src="moon.webp">
+              <div class="content">
+                  <div class="content-bg">
+                      <h2>How </h2>
+                      <h2>   Far</h2>
+                      <h2>     Will </h2>
+                      <h2> Humanity </h2>
+                      <h2>Go</h2>
+                      <h2>To</h2>
+                      <h2>Remake</h2>
+                      <h2>the</h2>
+                      <h2>PLANET</h2>
+                  </div>
+                </div>
+            </div>
+          </section>
+          <section>
+            <div class="container">
+                <div class="text">
+                  <p>
+                    "A photograph can be an instant of life captured for eternity that will never cease looking back at you." – Brigitte Bardot
+                  </p>
+              </div>
+                  <div class="image">
+                      <img src="duck.avif" alt="Image 1">
+                  </div>
+              </div>
+          </section>
+          <section>
+            <div class="container">
+      
+                <div class="image">
+                    <img src="horseman.avif" alt="Image 1">
+                </div>
+                <div class="text">
+                    <p>
+                      "When words become unclear, I shall focus with photographs. When images become inadequate, I shall be content with silence." – Ansel Adams
+                    </p>
+                </div>
+            </div>
+          </section>
+          <section class="video-background">
+            <video autoplay muted loop id="background-video">
+                <source src="circuit.mp4">
+              </video>
+              <div class="content">
+                <div class="content-bg">
+                  
+                </div>
+              </div>
+        </section>
+        <section class="content-section">
+            <h2>About This Gallery</h2>
+            <p>
+                This image gallery showcases stunning visuals from various locations and themes. 
+                Each image tells a story and captures a unique moment. Explore and enjoy the collection!
+            </p>
+            <a href="#" class="btn">Learn More</a>
+        </section>
+    </main>
+    <div id="imageModal" style="display:none;">
+        <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:1000;">
+            <img id="modalImg" style="max-width:90%; max-height:90%; border-radius:8px;">
+        </div>
+    </div>
+    
+</body>
+    <script>
+$(document).ready(function() {
+            // Hide Actions
+            $('#hide-gallery').click(function() {
+                $('.gallery').hide();
+            });
+    
+            $('#hide-content').click(function() {
+                $('.content-section').hide();
+            });
+    
+            // Show Actions
+            $('#show-gallery').click(function() {
+                $('.gallery').show();
+            });
+    
+            $('#show-content').click(function() {
+                $('.content-section').show();
+            });
+            $('h2').addClass('hidden');
+
+    // Function to check if an element is in the viewport
+    function isInViewport(element) {
+        let elementTop = $(element).offset().top;
+        let elementBottom = elementTop + $(element).outerHeight();
+
+        let viewportTop = $(window).scrollTop();
+        let viewportBottom = viewportTop + $(window).height();
+
+        return elementBottom > viewportTop && elementTop < viewportBottom;
+    }
+
+    // Scroll Event Listener
+    $(window).on('scroll', function () {
+        $('h2').each(function () {
+            if (isInViewport(this)) {
+                $(this).addClass('fade-in').removeClass('hidden');
+            } else {
+                $(this).addClass('hidden').removeClass('fade-in');
+            }
+        });
+    });
+
+    // Trigger on page load
+    $(window).trigger('scroll');
+        });
+document.addEventListener('DOMContentLoaded', function() {
+  const scrollContainer = document.querySelector('.scroll-container');
+  const scrollContent = document.querySelector('.scroll-content');
+
+  // Clone the content to create a seamless loop
+  const clonedContent = scrollContent.cloneNode(true);
+  scrollContainer.appendChild(clonedContent);
+
+  // Function to animate the scrolling
+  function startScrolling() {
+    const contentWidth = scrollContent.offsetWidth; // Get the total width of the content
+    let currentPosition = -contentWidth; // Start with the content off-screen to the left
+
+    function animateScroll() {
+      currentPosition += 1; // Move right by 1px
+      if (currentPosition >= contentWidth) {
+        currentPosition = -contentWidth; // Reset the position once content has scrolled out to the right
+      }
+      scrollContent.style.transform = `translateX(${currentPosition}px)`;
+      clonedContent.style.transform = `translateX(${currentPosition + contentWidth}px)`;
+
+      requestAnimationFrame(animateScroll); // Keep animating the scroll
+    }
+
+    animateScroll(); // Start the animation
+  }
+
+  startScrolling(); // Start the continuous scrolling
+});
+  $('nav ul li a').on('click', function(event) {
+    if (this.hash !== '') {
+        event.preventDefault();
+        let hash = this.hash;
+        $('html, body').animate({
+            scrollTop: $(hash).offset().top
+        }, 800);
+    }
+})
+// Image Zoom Modal
+$('.gallery-item img').on('click', function() {
+    let imgSrc = $(this).attr('src');
+    $('#modalImg').attr('src', imgSrc);
+    $('#imageModal').fadeIn();
+});
+
+$('#imageModal').on('click', function() {
+    $(this).fadeOut();
+});
+
+// Fade Sections on Scroll
+$(window).on('scroll', function() {
+    $('.fade-section').each(function() {
+        if ($(this).offset().top < $(window).scrollTop() + $(window).height() - 100) {
+            $(this).addClass('visible');
+        }
+    });
+});
+
+
+// Typing Animation Effect for All <h2>
+    function typeEffect(element, speed) {
+    $(element).each(function() {
+        let text = $(this).text();
+        $(this).html(''); // Clear the existing text
+        let i = 0;
+        let currentElement = $(this); // Store the current h2 element
+
+        let timer = setInterval(() => {
+            if (i < text.length) {
+                currentElement.append(text.charAt(i));
+                i++;
+            } else {
+                clearInterval(timer);
+            }
+        }, speed);
+    });
+}
+
+// Apply Typing Effect to All <h2>
+$(document).ready(function() {
+    typeEffect('.content-bg h2:first', 100);
+});
+
+
+const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.querySelector('.menu');
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('active');
+        });
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+        });
+
+        $('.gallery-item').on('click', function() {
+    $(this).css({
+        'box-shadow': '0 0 30px 10px rgba(0, 128, 255, 0.7)',
+        'transition': 'box-shadow 0.5s ease-in-out'
+    });
+
+    setTimeout(() => {
+        $(this).css('box-shadow', '0 4px 8px rgba(0, 0, 0, 0.1)');
+    }, 1000);
+});
+    </script>
+</html>
